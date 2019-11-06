@@ -22,10 +22,10 @@ We report results produced by this package as follows.
 
 #### Use  docker:
 1. pull docker: </br>
-   ```> docker pull yichongx/mt-dnn-mediqa```
+   ```> docker pull yichongx/doubletransfer_mediqa2019```
 
 2. run docker </br>
-   ```> docker run -it --rm --runtime nvidia yichongx/mt-dnn-mediqa bash``` </br>
+   ```> docker run -it --rm --runtime nvidia yichongx/doubletransfer_mediqa2019 bash``` </br>
     Please refer to the following link if you first use docker: https://docs.docker.com/
 
 
