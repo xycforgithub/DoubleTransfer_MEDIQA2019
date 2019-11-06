@@ -11,13 +11,12 @@ Please cite the above paper if you use this code.
 
 ## Results
 We results produced by this package as follows.
-<center>
-| Task | Score(%) | Rank |
-| ------- | ------- | ------- | 
-| Question Answering (QA) | **78.0 (Accuracy), 81.91 (Precision)** | **1st**
-| Medical Natural Language Inference (MedNLI) | 93.8 | 3rd |
-| Recognizing Question Entailment (RQE) | 66.2 | 7th |
-</center>
+|                     Task                    |                Score(%)                |   Rank  |
+|:-------------------------------------------:|:--------------------------------------:|:-------:|
+|           Question Answering (QA)           | **78.0 (Accuracy), 81.91 (Precision)** | **1st** |
+| Medical Natural Language Inference (MedNLI) |                  93.8                  |   3rd   |
+|    Recognizing Question Entailment (RQE)    |                  66.2                  |   7th   |
+
 ## Quickstart 
 
 #### Use  docker:
