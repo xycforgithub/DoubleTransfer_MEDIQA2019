@@ -1,5 +1,4 @@
-# DoubleTransfer at MEDIQA 2019: 
-## Multi-Source Transfer Learning for Natural Language Understanding in the Medical Domain
+# DoubleTransfer at MEDIQA 2019: </br> Multi-Source Transfer Learning for Natural Language Understanding in the Medical Domain
 
 This PyTorch package implements DoubleTransfer for MEDIQA 2019 competition, as described in:
 
