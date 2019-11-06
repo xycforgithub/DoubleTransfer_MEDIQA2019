@@ -48,8 +48,6 @@ def build_data(data, dump_path, max_seq_len=MAX_SEQ_LEN, is_train=True, tolower=
             label = sample['label']
             original_len_hyp = len(hypothesis)
             _truncate_seq_pair(premise, hypothesis, max_seq_len - 3)
-            if len(hypothesis) != original_len_hyp:
-                print('pop b')
             # print('lens:',len(premise),len(hypothesis))
             input_ids =bert_tokenizer.convert_tokens_to_ids(['[CLS]'] + hypothesis + ['[SEP]'] + premise + ['[SEP]'])
             type_ids = [0] * ( len(hypothesis) + 2) + [1] * (len(premise) + 1)
@@ -158,14 +156,13 @@ def main(args):
     logger.info('Loaded {} rqe test samples'.format(len(rqe_test_data)))
 
     # shuffled version of RQE data
-    rqe_shuff_train_data, rqe_shuff_dev_data, rqe_smtest_dev_data, rqe_shuff_test_data = shuffle_rqe(rqe_train_data, rqe_dev_data, rqe_test_data)
+    rqe_shuff_train_data, rqe_shuff_dev_data, rqe_shuff_test_data = shuffle_rqe(rqe_train_data, rqe_dev_data, rqe_test_data)
 
     logger.info('Loaded {} rqe_shuff train samples'.format(len(rqe_shuff_train_data)))
     logger.info('Loaded {} rqe_shuff dev samples'.format(len(rqe_shuff_dev_data)))
     logger.info('Loaded {} rqe_shuff test samples'.format(len(rqe_shuff_test_data)))
 
-    mediqa_train_data, mediqa_dev_data, mediqa_old_dev_data, mediqa_test_data, 
-    mediqa_split_data = load_mediqa(mediqa_dir,GLOBAL_MAP['mediqa'],False)
+    mediqa_train_data, mediqa_dev_data, mediqa_old_dev_data, mediqa_test_data, mediqa_split_data = load_mediqa(mediqa_dir,GLOBAL_MAP['mediqa'],False)
 
     # mediqa_dev_data = load_mediqa(mediqa_dir,GLOBAL_MAP['mediqa'], is_train=False)
     logger.info('Loaded {} mediqa train samples'.format(len(mediqa_train_data)))
@@ -183,7 +180,7 @@ def main(args):
     mediqa_gt_path = os.path.join(root,'mediqa/task3_qa/gt_dev.csv')
     generate_gt_csv(mediqa_dev_data, mediqa_gt_path)
 
-    add_num=2 if args.v2_mode else 1
+    add_num=2
     medquad_train_data, medquad_dev_data= load_medquad(medquad_dir, negative_num=add_num)
     logger.info('Loaded {} medquad train samples'.format(len(medquad_train_data)))
     logger.info('Loaded {} medquad dev samples'.format(len(medquad_dev_data)))
@@ -199,8 +196,6 @@ def main(args):
         output_name+='_scibert'
     if test_mode:
         output_name+='_test'
-    if args.v2_mode:
-        output_name+='_v2'
 
     print('output_name:',output_name)
 
@@ -208,7 +203,7 @@ def main(args):
     if not os.path.isdir(mt_dnn_root):
         os.mkdir(mt_dnn_root)
 
-    BUILD MNLI
+    # BUILD MNLI
     multinli_train_fout = os.path.join(mt_dnn_root, 'mnli_train.json')
     multinli_matched_dev_fout = os.path.join(mt_dnn_root, 'mnli_matched_dev.json')
     multinli_mismatched_dev_fout = os.path.join(mt_dnn_root, 'mnli_mismatched_dev.json')
@@ -241,11 +236,9 @@ def main(args):
 
     rqe_shuff_train_fout = os.path.join(mt_dnn_root, 'rqe_shuff_train.json')
     rqe_shuff_dev_fout = os.path.join(mt_dnn_root, 'rqe_shuff_dev.json')
-    rqe_smtest_dev_fout = os.path.join(mt_dnn_root, 'rqe_smtest_dev.json')
     rqe_shuff_test_fout = os.path.join(mt_dnn_root, 'rqe_shuff_test.json')
     build_data(rqe_shuff_train_data, rqe_shuff_train_fout)
     build_data(rqe_shuff_dev_data, rqe_shuff_dev_fout)
-    build_data(rqe_smtest_dev_data, rqe_smtest_dev_fout)
     build_data(rqe_shuff_test_data, rqe_shuff_test_fout)
     logger.info('done with rqe_shuff')    
 
@@ -275,7 +268,7 @@ if __name__ == '__main__':
     args = parse_args()
     if args.sci_vocab:
         # default to uncased
-        bert_tokenizer = BertTokenizer.from_pretrained('../data/bert_data/scibert/scibert_scivocab_uncased/vocab.txt')
+        bert_tokenizer = BertTokenizer.from_pretrained('../bert_models/scibert_scivocab_uncased/vocab.txt')
     elif args.cased:
         bert_tokenizer = BertTokenizer.from_pretrained('bert-large-cased')
     else:

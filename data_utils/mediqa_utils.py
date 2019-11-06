@@ -27,7 +27,7 @@ def load_mednli(file, label_dict):
 			sample = {'uid': data_line['pairID'], 'premise': data_line['sentence1'], 'hypothesis': data_line['sentence2'], 'label': lab}
 			rows.append(sample)
 			cnt += 1
-			if test_mode and cnt==200:
+			if test_mode and cnt==201:
 				print('use first 200 samples for test.')
 				break
 	return rows
@@ -73,44 +73,11 @@ def shuffle_rqe(train_data, dev_data, test_data):
 		if p>0.5:
 			for sample in hyp_dict[hyp]:
 				new_train_data.append(sample)
-			# if len(hyp_dict[hyp])>1:
-				# print('len=',len(hyp_dict[hyp]),':',hyp)
 		else:
 			for sample in hyp_dict[hyp]:
 				new_dev_data.append(sample)
-			# if len(hyp_dict[hyp])>1:
-				# print('len=',len(hyp_dict[hyp]),':',hyp)
 	print('splitted dev size:',len(new_dev_data))
-	# pdb.set_trace()
-	my_test_path = '../data/mediqa/task2_rqe/gt_test_my.csv'
-	header=True
-	my_test_ids=[]
-	my_test_labels={}
-	with open(my_test_path) as f:
-		for line in f:
-			if header:
-				header=False
-				continue
-			test_id, test_label = line.split(',')
-			my_test_ids.append(test_id)
-			my_test_labels[test_id]=int(test_label)
-	part_test_data = []
-	for sample in test_data:
-		if sample['uid'] in my_test_ids:
-			new_sample={k:v for k,v in sample.items()}
-			new_sample['uid']='my_{}'.format(sample['uid'])
-			new_sample['label']=my_test_labels[sample['uid']]
-			part_test_data.append(new_sample)
-	print('length part data:', len(part_test_data))
-	new_dev_data = new_dev_data + part_test_data
-	# pdb.set_trace()
-	return new_train_data, new_dev_data, part_test_data, test_data
-
-
-
-
-				
-
+	return new_train_data, new_dev_data, test_data
 
 def load_mediqa(dir_path,label_dict, add_url_words):
 	# if is_train and not test_mode:
@@ -248,23 +215,9 @@ def load_mediqa_file(fn,f_idx=None, add_url_words=False):
 		if has_good:
 			good_questions.append(this_qid)
 
-
-		# print(all_scores,all_ranks,all_labels)
-		# pdb.set_trace()
 		for idx in range(current_cnt,cnt):
 			rows[idx]['label']=all_labels[idx - current_cnt]
-			# try:
 			assert rows[idx]['label']!=-1
-			# except:
-			# 	print('dsfs')
-			# 	pdb.set_trace()
-
-		# if test_mode and cnt>=250:
-		# 	print('use first 250 samples for test mediqa.')
-		# 	break
-	# print('url_words:',url_words)
-	# if testset:
-	# 	pdb.set_trace()
 
 	return rows, question_dict, good_questions
 	
@@ -302,20 +255,11 @@ def load_medquad(dir_path,negative_num=1,ratio=0.9, random_seed=0):
 				Q_IND='question'
 				A_IND='answer'
 				P_IND='pair'
-				# pdb.set_trace()
 			pairlist=pairs.findall(P_IND)
-			if len(pairlist)==0:
-				print('no pair:',this_path,fn)
-				# pdb.set_trace()
 			for qapair in pairlist:
-				try:
-					qid = qapair.find(Q_IND).attrib['qid']
-					qtext = qapair.find(Q_IND).text
-					atext = qapair.find(A_IND).text
-				except:
-					pdb.set_trace()
-				# if qid=='0000223-4':
-				# 	pdb.set_trace()
+				qid = qapair.find(Q_IND).attrib['qid']
+				qtext = qapair.find(Q_IND).text
+				atext = qapair.find(A_IND).text
 				if qtext is None or qid is None:
 					pdb.set_trace()
 				if atext is None:
@@ -335,12 +279,7 @@ def load_medquad(dir_path,negative_num=1,ratio=0.9, random_seed=0):
 			aset=set(answers)
 			for qid,qtext,atext in zip(qids,questions,answers):
 				aset-=question_answer_dict[qtext]
-				try:
-					assert atext not in aset
-				except:
-					pdb.set_trace()
 				if len(aset)==0:
-					# print('skip negative:',subset_dir,fn)
 					continue
 				fake_answers = random.sample(aset,min(negative_num, len(aset)))
 				for fidx,fatext in enumerate(fake_answers):
@@ -399,7 +338,6 @@ def submit(path, data, dataset_name, label_dict=None,
 			assert len(predictions) == len(uids)
 			# sort label
 			paired = [(uid, predictions[idx]) for idx, uid in enumerate(uids)]
-			# paired = sorted(paired, key=lambda item: item[0])
 			for uid, pred in paired:
 				this_pred=pred
 				if label_dict is not None:
@@ -443,14 +381,10 @@ def eval_model(model, data, dataset, use_cuda=True, with_label=True):
 		scores.extend(score)
 		ids.extend(batch_meta['uids'])
 	mmeta = METRIC_META[dataset]
-	# pdb.set_trace()
 	if with_label:
 		for mm in mmeta:
 			metric_name = METRIC_NAME[mm]
 			metric_func = METRIC_FUNC[mm]
-			# if mm < 3:
 			metric = metric_func(predictions, golds)
-			# else:
-				# metric = metric_func(scores, golds)
 			metrics[metric_name] = metric
 	return metrics, predictions, scores, golds, ids

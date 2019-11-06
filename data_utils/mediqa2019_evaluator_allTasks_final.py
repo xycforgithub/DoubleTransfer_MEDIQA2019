@@ -203,10 +203,19 @@ class MediqaEvaluator:
         q_nb_spearman = question_nb - sp_nan_ignoredQs
         spearman = spearman / q_nb_spearman if q_nb_spearman!=0 else 0.0
         P1 = P1 / question_nb
-        P5 = P5 / ref_sizeAt5
-        P10 = P10 / ref_sizeAt10
+        if ref_sizeAt5 != 0:
+            P5 = P5 / ref_sizeAt5
+        else:
+            P5 = 0.
+        if ref_sizeAt10 !=0:
+            P10 = P10 / ref_sizeAt10
+        else:
+            P10 = 0.
         # print(mrr, question_nb)
-        mrr = mrr / question_nb
+        if question_nb !=0:
+            mrr = mrr / question_nb
+        else:
+            mrr = 0.
 
         if np.isnan(spearman):
             spearman = 0.0
