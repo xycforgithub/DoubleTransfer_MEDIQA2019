@@ -10,7 +10,7 @@ The BioNLP workshop, ACL 2019.<br/>
 Please cite the above paper if you use this code. 
 
 ## Results
-We results produced by this package as follows.
+We report results produced by this package as follows.
 
 |                     Task                    |                Score(%)                |   Rank  |
 |:-------------------------------------------:|:--------------------------------------:|:-------:|
