@@ -1,0 +1,1 @@
+["vocab_size", "hidden_size", "num_hidden_layers", "hidden_act", "intermediate_size", "hidden_dropout_prob", "num_attention_heads", "attention_probs_dropout_prob", "max_position_embeddings", "type_vocab_size", "initializer_range"]
